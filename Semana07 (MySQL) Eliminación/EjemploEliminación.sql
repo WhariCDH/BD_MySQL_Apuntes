@@ -33,7 +33,7 @@ DELETE FROM heroes;
 
 #⭐ RESET PRO
 
-TRUNCATE TABLE heroes;
+TRUNCATE TABLE heroes;  
 
 #Reinicia todo y reinicia contador 
 
