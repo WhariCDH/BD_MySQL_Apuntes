@@ -238,14 +238,27 @@ INSERT INTO armas VALUES
 (89,'Halloween Bow','Bow',255,220,89),
 (90,'Beach Rifle','Rifle',265,220,90),
 (91,'Tempest Sword','Sword',290,240,91),
-(92,'Dragon Knuckle','Gauntlet',300,230,92),
-(93,'Shrine Staff','Staff',270,220,93),
-(94,'Oni Blade','Sword',280,240,94),
-(95,'Beast Fang','Claw',230,210,95),
-(96,'Captain Sword','Sword',290,250,96),
-(97,'Alt Blade','Sword',285,240,97),
-(98,'Future Blade','Sword',295,250,98);
+(92,'Dragon Knuckle','Gauntlet',300,230,92); #Se elimino parte de la información para que se pueda visualizar mejor el "RIGHT JOIN"
 
 
+/*FULL JOIN: personajes + armas*/
 
+SELECT p.nombre, a.nombre_arma
+FROM personajes p
+LEFT JOIN armas a
+ON p.id_personaje = a.id_personaje
 
+UNION
+
+SELECT p.nombre, a.nombre_arma
+FROM personajes p
+RIGHT JOIN armas a
+ON p.id_personaje = a.id_personaje;
+
+/*
+¿QUÉ HACE ESTO?
+
+✔ Personajes con arma
+✔ Personajes sin arma
+✔ Armas sin personaje
+*/
