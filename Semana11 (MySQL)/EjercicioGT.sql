@@ -246,72 +246,89 @@ INSERT INTO armas VALUES
 (97,'Alt Blade','Sword',285,240,97),
 (98,'Future Blade','Sword',295,250,98);
 
-/*****************************/
-/*AHORA LO IMPORTANTE → JOINS*/
-/*****************************/
+/*🧠 NIVEL 1*/
 
-/*1: INNER JOIN*/
-#Mostrar personaje con su elemento (deja de salir solo numero y se amolda al texto del elemento)
+#1. ¿Cuántos personajes hay en total? (total de datos)
+SELECT COUNT(*) AS personajesGT
+FROM personajes;
 
-SELECT p.nombre, e.nombre_elemento
-FROM personajes p
-INNER JOIN elementos e
-ON p.id_elemento = e.id_elemento;
+#2. Promedio de ataque de TODOS los personajes (tabla personaje a promedio ataque)
+SELECT AVG(ataque) AS promedio_ataque
+FROM personajes;
 
-#Otro ejemplo para unir información de diferentes tablas 
-
-SELECT p.nombre, a.nombre_arma, a.tipo_arma
-FROM personajes p
-INNER JOIN armas a
-ON p.id_personaje = a.id_personaje;
-
-#Ahora para unir tres tablas diferentes
-
+#3. Ataque máximo y mínimo
 SELECT 
-p.nombre AS personaje,     #"AS" solo cambia el nombre de la columna, NO el contenido
-p.rareza,
-p.edad,
-e.nombre_elemento,
-a.nombre_arma,
-a.tipo_arma
+MAX(ataque) AS max_ataque,
+MIN(ataque) AS min_ataque
+FROM personajes;
+
+/*NIVEL 2 → GROUP BY*/
+
+#4. Cantidad de personajes por rareza (rareza se implementa sin cambios como una tabla extra)
+SELECT rareza, COUNT(*) AS cantidad
+FROM personajes
+GROUP BY rareza;
+
+#5. Promedio de ataque por rareza
+SELECT rareza, AVG(ataque) AS promedio_ataque
+FROM personajes
+GROUP BY rareza;
+
+#6. Promedio de vida (hp) por elemento
+SELECT e.nombre_elemento, AVG(p.hp) AS promedio_hp
 FROM personajes p
-INNER JOIN elementos e
+JOIN elementos e 
 ON p.id_elemento = e.id_elemento
-INNER JOIN armas a
+GROUP BY e.nombre_elemento;
+
+SELECT p.nombre, e.nombre_elemento AS elemento, AVG(p.hp) AS promedio_hp
+FROM personajes p
+JOIN elementos e 
+ON p.id_elemento = e.id_elemento
+GROUP BY p.nombre, e.nombre_elemento;
+
+/*NIVEL 3 → HAVING*/
+
+#7. Mostrar rarezas con promedio de ataque mayor a 180
+SELECT rareza, AVG(ataque) AS promedio
+FROM personajes
+GROUP BY rareza
+HAVING promedio > 180;
+
+#8. Elementos con más de 10 personajes
+SELECT e.nombre_elemento, COUNT(*) AS cantidad
+FROM personajes p
+JOIN elementos e 
+ON p.id_elemento = e.id_elemento
+GROUP BY e.nombre_elemento
+HAVING cantidad > 10;
+
+#9. Elementos con promedio de ataque alto (>170)
+SELECT e.nombre_elemento, AVG(p.ataque) AS promedio
+FROM personajes p
+JOIN elementos e 
+ON p.id_elemento = e.id_elemento
+GROUP BY e.nombre_elemento
+HAVING promedio > 170;
+
+/*NIVEL PRO (EXAMEN REAL)*/
+#10. Promedio de ataque por tipo de arma
+SELECT a.tipo_arma, AVG(a.ataque_arma) AS promedio_arma
+FROM armas a
+GROUP BY a.tipo_arma;
+
+#11. Personajes con armas fuertes (promedio > 250)
+SELECT a.tipo_arma, AVG(a.ataque_arma) AS promedio
+FROM armas a
+GROUP BY a.tipo_arma
+HAVING promedio > 250;
+
+#12. Promedio TOTAL combinando personaje + arma
+SELECT 
+p.nombre,
+p.ataque,
+a.ataque_arma,
+(p.ataque + a.ataque_arma) AS ataque_total
+FROM personajes p
+JOIN armas a 
 ON p.id_personaje = a.id_personaje;
-
-/*Clase semana 8 y 9*/
-#"WHERE + JOIN"
-#Personajes SSR con su arma
-
-SELECT p.nombre, a.nombre_arma
-FROM personajes p
-INNER JOIN armas a
-ON p.id_personaje = a.id_personaje
-WHERE p.rareza = 'SSR';             #Filtro para que solo salga arma "SSR"
-
-#"ORDER BY + JOIN"
-SELECT p.nombre, a.ataque_arma
-FROM personajes p
-INNER JOIN armas a
-ON p.id_personaje = a.id_personaje
-ORDER BY a.ataque_arma DESC;        #Filtro de orden descendente
-
-/*2: LEFT JOIN*/
-#Mostrar TODOS los personajes aunque no tengan arma
-#✔ Si un personaje no tiene arma → aparece NULL
-
-SELECT p.nombre, a.nombre_arma
-FROM personajes p
-LEFT JOIN armas a
-ON p.id_personaje = a.id_personaje;
-
-#Encuentra personajes SIN arma
-SELECT p.nombre
-FROM personajes p
-LEFT JOIN armas a
-ON p.id_personaje = a.id_personaje
-WHERE a.id_arma IS NULL;
-
-
-
