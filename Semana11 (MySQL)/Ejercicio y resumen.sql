@@ -36,39 +36,44 @@ INSERT INTO ventas VALUES
 /*FUNCIONES AGREGADAS*/
 
 /*1: SUM → sumar*/
-#total vendido
-SELECT SUM(cantidad) AS total_productos
+#total vendido (Suma la cantidad total de la tabla ventas)
+SELECT SUM(cantidad) AS total_productos 
 FROM ventas;
 
 /*2: COUNT → contar*/
+#contar todos los datos registrados en columna de la tabla ventas
 SELECT COUNT(*) AS total_ventas
 FROM ventas;
 
 /*3: AVG → promedio*/
+#Promedio del precio de la tabla productos
 SELECT AVG(precio) AS precio_promedio
 FROM productos;
 
 /*4: MAX → máximo*/
+#Maximo precio de la tabla producto
 SELECT MAX(precio) AS producto_mas_caro
 FROM productos;
 
 /*5: MIN → mínimo*/
+#Minimo precio de la tabla productos
 SELECT MIN(precio) AS producto_mas_barato
 FROM productos;
 
 /*******************************/
 /*GROUP BY (MUY IMPORTANTE 💀)*/
 /*******************************/
-#agrupa datos
+/*agrupa datos*/
 
-/*
-ejemplo
-total vendido por producto
-*/
-
+#Lo mismo que arriba pero aumentamos una tabla sin cambios como id_producto
 SELECT id_producto, SUM(cantidad) AS total_vendido
 FROM ventas
 GROUP BY id_producto;
+
+#Tabla sin cambios para fecha 
+SELECT fecha, SUM(cantidad) AS total_vendido
+FROM ventas
+GROUP BY fecha;
 
 /*CON JOIN (nivel pro)*/
 
@@ -92,3 +97,4 @@ INNER JOIN productos p
 ON v.id_producto = p.id_producto
 GROUP BY p.nombre
 HAVING SUM(v.cantidad) > 10;
+
